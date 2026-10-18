@@ -163,20 +163,21 @@ To use a separately installed prebuilt FalkorDB-compatible Redis module, start i
 
 Copy `.env.example` to `.env`. Empty credentials are valid for the Docker FalkorDB image or a local prebuilt instance.
 
-| Variable            | Default         | Purpose                           |
-| ------------------- | --------------- | --------------------------------- |
-| `APP_ENV`           | `development`   | Runtime environment label         |
-| `LOG_LEVEL`         | `INFO`          | Python logging level              |
-| `FALKORDB_HOST`     | `localhost`     | FalkorDB hostname                 |
-| `FALKORDB_PORT`     | `6379`          | FalkorDB port                     |
-| `FALKORDB_USERNAME` | empty           | Optional database username        |
-| `FALKORDB_PASSWORD` | empty           | Optional database password        |
-| `FALKORDB_GRAPH`    | `study_copilot` | FalkorDB graph name               |
-| `DEFAULT_USER_ID`   | `u_001`         | Default demo learner              |
-| `LLM_PROVIDER`      | `deterministic` | Agent provider mode               |
-| `LLM_MODEL`         | `gpt-4o-mini`   | Optional model name               |
-| `LLM_API_KEY`       | empty           | Optional LLM key; never commit it |
-| `LLM_BASE_URL`      | OpenAI URL      | Optional compatible API URL       |
+| Variable            | Default         | Purpose                                      |
+| ------------------- | --------------- | -------------------------------------------- |
+| `APP_ENV`           | `development`   | Runtime environment label                    |
+| `LOG_LEVEL`         | `INFO`          | Python logging level                         |
+| `FALKORDB_HOST`     | `localhost`     | FalkorDB hostname                            |
+| `FALKORDB_PORT`     | `6379`          | FalkorDB port                                |
+| `FALKORDB_USERNAME` | empty           | Optional database username                   |
+| `FALKORDB_PASSWORD` | empty           | Optional database password                   |
+| `FALKORDB_SSL`      | `false`         | Set `true` for TLS-enabled cloud connections |
+| `FALKORDB_GRAPH`    | `study_copilot` | FalkorDB graph name                          |
+| `DEFAULT_USER_ID`   | `u_001`         | Default demo learner                         |
+| `LLM_PROVIDER`      | `deterministic` | Agent provider mode                          |
+| `LLM_MODEL`         | `gpt-4o-mini`   | Optional model name                          |
+| `LLM_API_KEY`       | empty           | Optional LLM key; never commit it            |
+| `LLM_BASE_URL`      | OpenAI URL      | Optional compatible API URL                  |
 
 ## API
 

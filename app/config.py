@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     falkordb_port: int = 6379
     falkordb_username: str | None = None
     falkordb_password: str | None = None
+    falkordb_ssl: bool = False
     falkordb_graph: str = "study_copilot"
     default_user_id: str = "u_001"
     llm_provider: str = "deterministic"
