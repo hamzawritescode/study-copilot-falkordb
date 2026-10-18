@@ -23,6 +23,7 @@ class GraphDatabase:
                 port=self.settings.falkordb_port,
                 username=self.settings.falkordb_username,
                 password=self.settings.falkordb_password,
+                ssl=self.settings.falkordb_ssl,
             )
             self._graph = self._client.select_graph(self.settings.falkordb_graph)
         return self._graph
