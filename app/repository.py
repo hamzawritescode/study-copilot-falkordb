@@ -65,7 +65,7 @@ class StudyRepository:
         """
         return self.db.query(query, {"user_id": user_id, "topic_id": topic_id, "mastery": mastery})
 
-      def mark_resource_complete(self, user_id: str, resource_id: str) -> list[dict[str, Any]]:
+    def mark_resource_complete(self, user_id: str, resource_id: str) -> list[dict[str, Any]]:
         query = """
         MATCH (u:User {id:$user_id})
         MATCH (r:Resource {id:$resource_id})
@@ -76,7 +76,7 @@ class StudyRepository:
         import datetime
         return self.db.query(query, {"user_id": user_id, "resource_id": resource_id, "completed_at": datetime.datetime.now(datetime.UTC).isoformat()})
 
-      def record_quiz_attempt(self, user_id: str, quiz_id: str, score: float) -> list[dict[str, Any]]:
+    def record_quiz_attempt(self, user_id: str, quiz_id: str, score: float) -> list[dict[str, Any]]:
         query = """
         MATCH (u:User {id:$user_id}), (q:Quiz {id:$quiz_id})
         CREATE (u)-[:TOOK]->(attempt:QuizAttempt {id:$attempt_id, score:$score, created_at:$created_at})-[:FOR_QUIZ]->(q)
@@ -86,7 +86,7 @@ class StudyRepository:
         import uuid
         return self.db.query(query, {"user_id": user_id, "quiz_id": quiz_id, "score": score, "attempt_id": f"attempt_{uuid.uuid4().hex[:8]}", "created_at": datetime.datetime.now(datetime.UTC).isoformat()})
 
-      def practice_questions(self, topic_id: str | None) -> list[dict[str, Any]]:
+    def practice_questions(self, topic_id: str | None) -> list[dict[str, Any]]:
         query = """
         MATCH (t:Topic {id:$topic_id})-[:HAS_QUIZ]->(q:Quiz)
         RETURN t, q

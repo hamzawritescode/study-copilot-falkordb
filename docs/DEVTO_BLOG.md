@@ -1,6 +1,6 @@
 ---
 title: "Study Copilot: Building an AI Agent That Acts on Connected Learning Data"
-published: false
+published: true
 description: "A graph-grounded study assistant built with FalkorDB and FastAPI."
 tags: ai, python, fastapi, database
 ---
@@ -17,7 +17,7 @@ A recommendation is only useful when it is relevant and actionable. Study Copilo
 
 ## FalkorDB as the learning graph
 
-The graph contains `User`, `Topic`, `Progress`, `SkillGap`, `Resource`, `Quiz`, `StudyPlan`, and `StudyPlanItem` nodes. Relationships include `HAS_PROGRESS`, `FOR_TOPIC`, `PREREQUISITE_OF`, `HAS_RESOURCE`, `HAS_QUIZ`, and `CONTAINS`.
+The graph contains `User`, `Topic`, `Progress`, `SkillGap`, `Resource`, `Quiz`, `StudyPlan`, and `StudyPlanItem` nodes. Quiz-attempt persistence is planned as a future improvement. Relationships include `HAS_PROGRESS`, `FOR_TOPIC`, `PREREQUISITE_OF`, `HAS_RESOURCE`, `HAS_QUIZ`, and `CONTAINS`.
 
 ```cypher
 MATCH (u:User {id:$user_id})-[:HAS_PROGRESS]->(p:Progress)-[:FOR_TOPIC]->(t:Topic)
@@ -44,8 +44,9 @@ The browser calls FastAPI. The agent asks `StudyRepository` for user context and
 
 1. Ask, `What should I study next?` to see a graph-grounded recommendation.
 2. Ask, `Create a study plan`, then approve the pending action.
-3. Ask, `Update my progress`, `Mark this resource complete`, or `Record a quiz attempt`, and approve the mutation.
-4. Ask, `Generate practice questions` to retrieve the connected quiz for the recommended topic.
+3. Ask, `Update my progress`, `Mark this resource complete`, and approve the mutation.
+4. Ask, `Record a quiz attempt`, to stage the requested action.
+5. Ask, `Generate practice questions` to retrieve the connected quiz for the recommended topic.
 
 The UI exposes the retrieved context and action result so the user can see why the agent chose its recommendation.
 
