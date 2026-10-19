@@ -1,6 +1,16 @@
 # Study Copilot
 
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com/)
+[![FalkorDB](https://img.shields.io/badge/FalkorDB-graph-7B61FF.svg)](https://www.falkordb.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-supported-2496ED.svg)](https://docs.docker.com/compose/)
+[![Pytest](https://img.shields.io/badge/tests-pytest-0A9EDC.svg)](https://pytest.org/)
+
 Study Copilot is a graph-grounded learning assistant powered by FalkorDB. It helps a learner choose the next useful topic from connected progress, prerequisite, skill-gap, resource, and quiz data. Recommendations are grounded in Cypher results, while graph-changing actions require explicit confirmation.
+
+## Why FalkorDB Matters
+
+FalkorDB lets Study Copilot traverse the relationships between users, progress, topics, prerequisites, resources, quizzes, skill gaps, and study plans. That structure lets the agent answer not only “what should I study?” but also “why is this topic ready now?” and “which connected resource or quiz should follow?” Generic RAG or vector-only retrieval can find semantically similar documents, but it does not naturally enforce prerequisite paths, expose relationship evidence, or update connected learner state. The graph makes recommendations explainable and actions grounded in the learner’s actual learning path.
 
 ## Project Status
 
@@ -24,14 +34,13 @@ Students often know they need to study but cannot decide what to do next. A flat
 
 ```mermaid
 flowchart LR
-    Browser[Web UI] --> API[FastAPI]
-    API --> Agent[StudyAgent]
-    Agent --> Repo[StudyRepository]
-    Repo --> DB[GraphDatabase]
-    DB --> Falkor[(FalkorDB)]
-    Agent --> Actions[ActionService]
-    Actions --> Repo
-    Actions --> Audit[In-memory audit log]
+  User[User] --> UI[Web UI]
+  UI --> API[FastAPI]
+  API --> Agent[Agent]
+  Agent --> Tools[Tools and safety checks]
+  Tools --> DB[(FalkorDB)]
+  DB --> Cypher[Cypher context]
+  Cypher --> Decision[Recommendation or confirmed action]
 ```
 
 The browser calls `/api/chat`. The agent first retrieves the user's graph context and eligible next topics. It then decides whether the request is a recommendation or a confirmation-gated mutation. Confirmed mutations are executed through `ActionService` and written to FalkorDB.
@@ -220,6 +229,8 @@ Copy `.env.example` to `.env`. Empty credentials are valid for the Docker Falkor
 - `POST /api/actions/{action_id}/confirm`: accepts `{ "approved": true }` or `{ "approved": false }`.
 - `GET /docs`: interactive OpenAPI documentation.
 
+The UI checks `/health` on load and shows `graph online` or `graph unavailable` in the header. If the graph is unavailable, the backend and UI remain available for troubleshooting, while graph-backed chat and actions return a clear error until FalkorDB is reachable.
+
 Example:
 
 ```powershell
@@ -243,6 +254,15 @@ Use the buttons in the UI or type the prompts. The right-hand context panel show
 
 - [Demo video](https://youtu.be/Y1QhaLu1SWs)
 - [Technical blog](https://dev.to/hamzawritescode/study-copilot-building-an-ai-agent-that-acts-on-connected-learning-data-4g76)
+
+### Screenshot placeholders
+
+Add the final screenshots to `docs/screenshots/` using these filenames:
+
+- Chat recommendation: `docs/screenshots/chat-recommendation.png`
+- Graph context: `docs/screenshots/graph-context.png`
+- Confirmation card: `docs/screenshots/confirmation-card.png`
+- Study plan result: `docs/screenshots/study-plan-result.png`
 
 ## Repository Layout
 
