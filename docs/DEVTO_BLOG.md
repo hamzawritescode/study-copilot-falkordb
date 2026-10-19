@@ -17,7 +17,7 @@ A recommendation is only useful when it is relevant and actionable. Study Copilo
 
 ## FalkorDB as the learning graph
 
-The graph contains `User`, `Topic`, `Progress`, `SkillGap`, `Resource`, `Quiz`, `StudyPlan`, and `StudyPlanItem` nodes. Quiz-attempt persistence is planned as a future improvement. Relationships include `HAS_PROGRESS`, `FOR_TOPIC`, `PREREQUISITE_OF`, `HAS_RESOURCE`, `HAS_QUIZ`, and `CONTAINS`.
+The graph contains `User`, `Topic`, `Progress`, `SkillGap`, `Resource`, `Quiz`, `QuizAttempt`, `StudyPlan`, and `StudyPlanItem` nodes. Relationships include `HAS_PROGRESS`, `FOR_TOPIC`, `PREREQUISITE_OF`, `HAS_RESOURCE`, `HAS_QUIZ`, `TOOK`, `FOR_QUIZ`, `COMPLETED_RESOURCE`, and `CONTAINS`.
 
 ```cypher
 MATCH (u:User {id:$user_id})-[:HAS_PROGRESS]->(p:Progress)-[:FOR_TOPIC]->(t:Topic)

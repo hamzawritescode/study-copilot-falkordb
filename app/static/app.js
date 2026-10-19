@@ -5,13 +5,27 @@ const form = document.querySelector("#chat-form");
 const input = document.querySelector("#message-input");
 const actionCard = document.querySelector("#action-card");
 
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      })[character],
+  );
+}
+
 function addMessage(text, who = "user") {
   const item = document.createElement("div");
   item.className = `message ${who}`;
   item.innerHTML =
     who === "assistant"
-      ? `<span class="avatar">SC</span><div><p>${text}</p></div>`
-      : `<div><p>${text}</p></div>`;
+      ? `<span class="avatar">SC</span><div><p>${escapeHtml(text)}</p></div>`
+      : `<div><p>${escapeHtml(text)}</p></div>`;
   messages.appendChild(item);
   messages.scrollTop = messages.scrollHeight;
 }
@@ -32,7 +46,7 @@ function renderContext(rows) {
           : candidate.title
             ? "Resource"
             : "Graph node";
-        return `<div class="context-item"><strong>${name}</strong><span>${type} · retrieved from FalkorDB</span></div>`;
+        return `<div class="context-item"><strong>${escapeHtml(name)}</strong><span>${escapeHtml(type)} · retrieved from FalkorDB</span></div>`;
       })
       .join("") ||
     '<div class="context-empty">No matching records found.</div>';
@@ -40,7 +54,7 @@ function renderContext(rows) {
 function renderAction(response) {
   actionCard.classList.toggle("hidden", !response.pending_action_id);
   if (!response.pending_action_id) return;
-  actionCard.innerHTML = `<strong>Confirmation required</strong><p>${response.decision.reason}</p><button id="approve">Approve action</button> <button id="reject">Reject</button>`;
+  actionCard.innerHTML = `<strong>Confirmation required</strong><p>${escapeHtml(response.decision.reason)}</p><button id="approve">Approve action</button> <button id="reject">Reject</button>`;
   document.querySelector("#approve").onclick = () => confirmAction(true);
   document.querySelector("#reject").onclick = () => confirmAction(false);
 }
@@ -52,7 +66,7 @@ async function confirmAction(approved) {
     body: JSON.stringify({ approved }),
   });
   const result = await response.json();
-  actionCard.innerHTML = `<strong>Action ${result.status}</strong><p>${result.result.message || "The action has been logged."}</p>`;
+  actionCard.innerHTML = `<strong>Action ${escapeHtml(result.status)}</strong><p>${escapeHtml(result.result.message || "The action has been logged.")}</p>`;
 }
 async function submit(text) {
   addMessage(text, "user");

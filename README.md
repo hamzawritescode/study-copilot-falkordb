@@ -12,6 +12,8 @@ This repository is a minimal hackathon demo. The working end-to-end flow is:
 4. Ask to update progress.
 5. Approve or reject that pending action.
 
+The same confirmation flow supports resource completion, quiz-attempt recording, and practice-question retrieval.
+
 The deterministic agent works without an external LLM API key. The main actions are exposed through chat and the confirmation endpoint; there are no separate action-specific HTTP endpoints.
 
 ## Problem and Target User
@@ -42,6 +44,7 @@ The browser calls `/api/chat`. The agent first retrieves the user's graph contex
 - `Topic`: `id`, `name`, `difficulty`, `estimated_minutes`, `description`
 - `Resource`: `id`, `title`, `kind`, `minutes`, `url`
 - `Quiz`: `id`, `title`, `minutes`
+- `QuizAttempt`: `id`, `score`, `created_at`
 - `Progress`: `id`, `mastery`, `status`
 - `SkillGap`: `id`, `severity`, `reason`
 - `StudyPlan`: `id`, `title`, `status`, `created_at`
@@ -54,6 +57,8 @@ The browser calls `/api/chat`. The agent first retrieves the user's graph contex
 - `Topic -[:PREREQUISITE_OF]-> Topic`
 - `Topic -[:HAS_RESOURCE]-> Resource`
 - `Topic -[:HAS_QUIZ]-> Quiz`
+- `User -[:TOOK]-> QuizAttempt -[:FOR_QUIZ]-> Quiz`
+- `User -[:COMPLETED_RESOURCE]-> Resource`
 - `User -[:HAS_PLAN]-> StudyPlan -[:CONTAINS]-> StudyPlanItem -[:TARGETS]-> Topic`
 
 The seed graph includes Python Functions, Data Structures, Recursion, and Python Testing. Python Functions is a prerequisite for Data Structures; Data Structures is a prerequisite for Recursion and Python Testing.
@@ -112,6 +117,16 @@ CREATE (plan)-[:CONTAINS]->
 RETURN plan
 ```
 
+Record a confirmed quiz attempt:
+
+```cypher
+MATCH (u:User {id:$user_id}), (q:Quiz {id:$quiz_id})
+CREATE (u)-[:TOOK]->(attempt:QuizAttempt {
+  id:$attempt_id, score:$score, created_at:$created_at
+})-[:FOR_QUIZ]->(q)
+RETURN attempt, q
+```
+
 ## Agent Actions
 
 Implemented actions:
@@ -154,6 +169,24 @@ uvicorn app.main:app --reload
 ```
 
 Open the UI at <http://localhost:8000>. The API documentation is at <http://localhost:8000/docs>.
+
+### macOS/Linux
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+For a host-run backend instead of the containerized app:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install .
+python scripts/seed.py
+uvicorn app.main:app --reload
+```
 
 Skip `scripts/seed.py` in this mode because no graph is available. Run the seed command only after FalkorDB is running.
 
@@ -205,6 +238,11 @@ For a mutation request, use a message containing `plan` or `progress`. The respo
 
 Use the buttons in the UI or type the prompts. The right-hand context panel shows records retrieved from FalkorDB, and the action panel shows approval controls when needed.
 
+## Demo
+
+- [Demo video](https://youtu.be/Y1QhaLu1SWs)
+- [Technical blog](https://dev.to/hamzawritescode/study-copilot-building-an-ai-agent-that-acts-on-connected-learning-data-4g76)
+
 ## Repository Layout
 
 ```text
@@ -219,7 +257,7 @@ docker-compose.yml   FalkorDB and app services
 
 ## Limitations and Future Improvements
 
-The current demo uses a deterministic decision loop so it is reproducible and does not require an API key. Add a production LLM adapter, persistent audit events, authenticated users, richer plan ordering, quiz-attempt recording, practice-question generation, and broader integration tests before production use. The in-memory pending-action store is intentionally simple and is lost when the process restarts.
+The current demo uses a deterministic decision loop so it is reproducible and does not require an API key. Add a production LLM adapter, persistent audit events, authenticated users, richer plan ordering, richer question content, and broader integration tests before production use. The in-memory pending-action store is intentionally simple and is lost when the process restarts.
 
 ## License
 

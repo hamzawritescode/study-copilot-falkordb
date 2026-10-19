@@ -1,15 +1,9 @@
-import json
-import logging
 from typing import Any
-
-import httpx
 
 from app.config import Settings
 from app.repository import StudyRepository
 from app.schemas import ActionDecision
 from app.tools import ActionService
-
-logger = logging.getLogger(__name__)
 
 
 class StudyAgent:
