@@ -1,3 +1,5 @@
+import datetime
+import uuid
 from typing import Any
 
 from app.database import GraphDatabase
@@ -53,9 +55,16 @@ class StudyRepository:
         CREATE (plan)-[:CONTAINS]->(item:StudyPlanItem {status:'planned', order:0})-[:TARGETS]->(topic)
         RETURN plan
         """
-        import datetime
-        import uuid
-        return self.db.query(query, {"user_id": user_id, "topic_ids": topic_ids, "title": title, "plan_id": f"plan_{uuid.uuid4().hex[:8]}", "created_at": datetime.datetime.now(datetime.UTC).isoformat()})
+        return self.db.query(
+            query,
+            {
+                "user_id": user_id,
+                "topic_ids": topic_ids,
+                "title": title,
+                "plan_id": f"plan_{uuid.uuid4().hex[:8]}",
+                "created_at": datetime.datetime.now(datetime.UTC).isoformat(),
+            },
+        )
 
     def record_progress(self, user_id: str, topic_id: str, mastery: float) -> list[dict[str, Any]]:
         query = """
@@ -73,8 +82,14 @@ class StudyRepository:
         SET completed.completed_at = $completed_at
         RETURN r, completed
         """
-        import datetime
-        return self.db.query(query, {"user_id": user_id, "resource_id": resource_id, "completed_at": datetime.datetime.now(datetime.UTC).isoformat()})
+        return self.db.query(
+            query,
+            {
+                "user_id": user_id,
+                "resource_id": resource_id,
+                "completed_at": datetime.datetime.now(datetime.UTC).isoformat(),
+            },
+        )
 
     def record_quiz_attempt(self, user_id: str, quiz_id: str, score: float) -> list[dict[str, Any]]:
         query = """
@@ -82,9 +97,16 @@ class StudyRepository:
         CREATE (u)-[:TOOK]->(attempt:QuizAttempt {id:$attempt_id, score:$score, created_at:$created_at})-[:FOR_QUIZ]->(q)
         RETURN attempt, q
         """
-        import datetime
-        import uuid
-        return self.db.query(query, {"user_id": user_id, "quiz_id": quiz_id, "score": score, "attempt_id": f"attempt_{uuid.uuid4().hex[:8]}", "created_at": datetime.datetime.now(datetime.UTC).isoformat()})
+        return self.db.query(
+            query,
+            {
+                "user_id": user_id,
+                "quiz_id": quiz_id,
+                "score": score,
+                "attempt_id": f"attempt_{uuid.uuid4().hex[:8]}",
+                "created_at": datetime.datetime.now(datetime.UTC).isoformat(),
+            },
+        )
 
     def practice_questions(self, topic_id: str | None) -> list[dict[str, Any]]:
         query = """

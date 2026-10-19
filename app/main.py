@@ -52,3 +52,6 @@ def confirm(action_id: str, request: ConfirmRequest) -> ActionResponse:
         return ActionResponse(action_id=action_id, status=result["status"], result=result["result"])
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Action confirmation failed")
+        raise HTTPException(status_code=503, detail="The study graph is temporarily unavailable") from exc

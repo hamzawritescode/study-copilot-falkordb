@@ -1,14 +1,14 @@
 SCHEMA_QUERIES = [
-    "CREATE INDEX FOR (n:User) ON (n.id)",
-    "CREATE INDEX FOR (n:Topic) ON (n.id)",
-    "CREATE INDEX FOR (n:Resource) ON (n.id)",
-    "CREATE INDEX FOR (n:Progress) ON (n.id)",
+    "CREATE INDEX IF NOT EXISTS FOR (n:User) ON (n.id)",
+    "CREATE INDEX IF NOT EXISTS FOR (n:Topic) ON (n.id)",
+    "CREATE INDEX IF NOT EXISTS FOR (n:Resource) ON (n.id)",
+    "CREATE INDEX IF NOT EXISTS FOR (n:Progress) ON (n.id)",
 ]
 
 SEED_QUERY = """
 CREATE (u:User {id:'u_001', name:'Aisha Khan', available_minutes:45}),
        (python:Topic {id:'t_python', name:'Python Functions', difficulty:2, estimated_minutes:35, description:'Reusable functions, arguments, and return values'}),
-       (data:Topic {id:'t_data', name:'Data Structures', difficulty:3, estimated_minutes:50, description:'Lists, dictionaries, sets, and tuples'}),
+    (data:Topic {id:'t_data', name:'Data Structures', difficulty:3, estimated_minutes:45, description:'Lists, dictionaries, sets, and tuples'}),
        (recursion:Topic {id:'t_recursion', name:'Recursion', difficulty:4, estimated_minutes:45, description:'Solving problems with self-referential functions'}),
        (testing:Topic {id:'t_testing', name:'Python Testing', difficulty:3, estimated_minutes:30, description:'Reliable tests with pytest'}),
        (r1:Resource {id:'r_functions', title:'Functions in Practice', kind:'article', minutes:20, url:'https://docs.python.org/3/tutorial/controlflow.html#defining-functions'}),

@@ -4,7 +4,7 @@
 - **Short description:** A FalkorDB-powered learning agent that traverses connected progress, prerequisite, resource, and quiz data to recommend and execute the next study action.
 - **Track:** Agents That Act on Connected Data
 - **Repository URL:** https://github.com/hamzawritescode/study-copilot-falkordb
-- **Demo video URL:** `<ADD_DEMO_VIDEO_URL>`
+- **Demo video URL:** https://youtu.be/Y1QhaLu1SWs
 - **Blog URL:** https://dev.to/hamzawritescode/study-copilot-building-an-ai-agent-that-acts-on-connected-learning-data-4g76
 - **Tech stack:** Python, FastAPI, FalkorDB, Cypher, Docker Compose, HTML/CSS/JavaScript
 - **How FalkorDB is used:** FalkorDB stores learner, topic, prerequisite, progress, skill-gap, resource, quiz, and plan relationships. The agent retrieves connected context before recommending or staging an action.
