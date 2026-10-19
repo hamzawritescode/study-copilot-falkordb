@@ -20,3 +20,16 @@ def test_chat_rejects_empty_message():
     client = TestClient(app)
     response = client.post("/api/chat", json={"message": "", "user_id": "u_001"})
     assert response.status_code == 422
+
+
+def test_confirm_rejects_unknown_action():
+    client = TestClient(app)
+    response = client.post("/api/actions/act_missing/confirm", json={"approved": True})
+    assert response.status_code == 404
+
+
+def test_confirm_rejects_overlong_action_id():
+    client = TestClient(app)
+    action_id = "a" * 33
+    response = client.post(f"/api/actions/{action_id}/confirm", json={"approved": True})
+    assert response.status_code == 422

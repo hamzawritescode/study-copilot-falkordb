@@ -24,6 +24,9 @@ class GraphDatabase:
                 username=self.settings.falkordb_username,
                 password=self.settings.falkordb_password,
                 ssl=self.settings.falkordb_ssl,
+                socket_timeout=self.settings.falkordb_timeout,
+                socket_connect_timeout=self.settings.falkordb_timeout,
+                health_check_interval=30,
             )
             self._graph = self._client.select_graph(self.settings.falkordb_graph)
         return self._graph

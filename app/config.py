@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     falkordb_username: str | None = None
     falkordb_password: str | None = None
     falkordb_ssl: bool = False
+    falkordb_timeout: float = 5.0
     falkordb_graph: str = "study_copilot"
     default_user_id: str = "u_001"
     llm_provider: str = "deterministic"
