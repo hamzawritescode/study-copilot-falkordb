@@ -1,23 +1,86 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Study Copilot</title>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-  <main class="shell">
-    <header class="topbar">
-      <div><p class="eyebrow">FALKORDB / CONNECTED LEARNING</p><h1>Study Copilot</h1></div>
-      <span class="status"><i></i> graph online</span>
-    </header>
-    <section class="hero"><div><p class="eyebrow">A better next step</p><h2>Turn your learning graph into momentum.</h2><p class="lede">Ask what to study, build a plan, or update your progress. Every recommendation shows the connected evidence behind it.</p></div><div class="metric"><strong>45</strong><span>minutes available today</span></div></section>
-    <section class="workspace">
-      <div class="chat-panel"><div class="panel-heading"><span>Conversation</span><span class="user-chip">Aisha Khan · u_001</span></div><div id="messages" class="messages"><div class="message assistant"><span class="avatar">SC</span><div><p>Welcome back, Aisha. I can find your next topic, make a study plan, or update your progress.</p><div class="quick-actions"><button data-prompt="What should I study next?">Next best topic</button><button data-prompt="Build me a study plan">Build a plan</button></div></div></div></div><form id="chat-form"><input id="message-input" maxlength="2000" autocomplete="off" placeholder="Ask about your learning path..." required><button aria-label="Send message">Send</button></form></div>
-      <aside class="context-panel"><div class="panel-heading"><span>Graph context</span><span id="context-count">0 nodes</span></div><div id="context" class="context-empty">Ask a question to inspect the graph evidence used by the agent.</div><div id="action-card" class="action-card hidden"></div></aside>
-    </section>
-  </main>
-  <script src="/static/app.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Copilot</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">FALKORDB / CONNECTED LEARNING</p>
+          <h1>Study Copilot</h1>
+        </div>
+        <span id="graph-status" class="status"><i></i> checking graph</span>
+      </header>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">A better next step</p>
+          <h2>Turn your learning graph into momentum.</h2>
+          <p class="lede">
+            Ask what to study, build a plan, or update your progress. Every
+            recommendation shows the connected evidence behind it.
+          </p>
+        </div>
+        <div class="metric">
+          <strong>45</strong><span>minutes available today</span>
+        </div>
+      </section>
+      <section class="workspace">
+        <div class="chat-panel">
+          <div class="panel-heading">
+            <span>Conversation</span
+            ><span class="user-chip">Aisha Khan · u_001</span>
+          </div>
+          <div id="messages" class="messages">
+            <div class="message assistant">
+              <span class="avatar">SC</span>
+              <div>
+                <p>
+                  Welcome back, Aisha. I can find your next topic, make a study
+                  plan, or update your progress.
+                </p>
+                <div class="quick-actions">
+                  <button type="button" data-prompt="What should I study next?">
+                    Next best topic</button
+                  ><button type="button" data-prompt="Build me a study plan">
+                    Build a plan</button
+                  ><button type="button" data-prompt="Update my progress">
+                    Update progress</button
+                  ><button
+                    type="button"
+                    data-prompt="Generate practice questions"
+                  >
+                    Practice questions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <form id="chat-form">
+            <input
+              id="message-input"
+              maxlength="2000"
+              autocomplete="off"
+              placeholder="Ask about your learning path..."
+              aria-label="Message"
+              required
+            /><button type="submit" aria-label="Send message">Send</button>
+          </form>
+        </div>
+        <aside class="context-panel">
+          <div class="panel-heading">
+            <span>Graph context</span><span id="context-count">0 nodes</span>
+          </div>
+          <div id="context" class="context-empty">
+            Ask a question to inspect the graph evidence used by the agent.
+          </div>
+          <div id="action-card" class="action-card hidden"></div>
+        </aside>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
 </html>
