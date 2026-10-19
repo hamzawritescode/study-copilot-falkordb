@@ -40,6 +40,8 @@ def health() -> dict[str, bool]:
 def chat(request: ChatRequest) -> ChatResponse:
     try:
         return ChatResponse(**agent.respond(request.user_id, request.message))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Agent request failed")
         raise HTTPException(status_code=503, detail="The study graph is temporarily unavailable") from exc

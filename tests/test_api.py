@@ -33,3 +33,15 @@ def test_confirm_rejects_overlong_action_id():
     action_id = "a" * 33
     response = client.post(f"/api/actions/{action_id}/confirm", json={"approved": True})
     assert response.status_code == 422
+
+
+def test_chat_maps_invalid_action_parameters_to_422(monkeypatch):
+    class InvalidAgent:
+        def respond(self, user_id, message):
+            raise ValueError("A study plan requires at least one valid topic")
+
+    monkeypatch.setattr("app.main.agent", InvalidAgent())
+    client = TestClient(app)
+    response = client.post("/api/chat", json={"message": "Create a study plan"})
+    assert response.status_code == 422
+    assert response.json()["detail"] == "A study plan requires at least one valid topic"
