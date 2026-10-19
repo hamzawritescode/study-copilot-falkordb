@@ -205,6 +205,7 @@ Copy `.env.example` to `.env`. Empty credentials are valid for the Docker Falkor
 | `FALKORDB_USERNAME` | empty           | Optional database username                   |
 | `FALKORDB_PASSWORD` | empty           | Optional database password                   |
 | `FALKORDB_SSL`      | `false`         | Set `true` for TLS-enabled cloud connections |
+| `FALKORDB_TIMEOUT`  | `5.0`           | Connection and query timeout in seconds      |
 | `FALKORDB_GRAPH`    | `study_copilot` | FalkorDB graph name                          |
 | `DEFAULT_USER_ID`   | `u_001`         | Default demo learner                         |
 | `LLM_PROVIDER`      | `deterministic` | Agent provider mode                          |

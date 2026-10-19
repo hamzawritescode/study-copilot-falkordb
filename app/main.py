@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Path as PathParam
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -40,18 +40,27 @@ def health() -> dict[str, bool]:
 def chat(request: ChatRequest) -> ChatResponse:
     try:
         return ChatResponse(**agent.respond(request.user_id, request.message))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Agent request failed")
         raise HTTPException(status_code=503, detail="The study graph is temporarily unavailable") from exc
 
 
 @app.post("/api/actions/{action_id}/confirm", response_model=ActionResponse)
-def confirm(action_id: str, request: ConfirmRequest) -> ActionResponse:
+def confirm(
+    request: ConfirmRequest,
+    action_id: str = PathParam(min_length=1, max_length=32),
+) -> ActionResponse:
     try:
         result = actions.confirm(action_id, request.approved)
         return ActionResponse(action_id=action_id, status=result["status"], result=result["result"])
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Action confirmation failed")
         raise HTTPException(status_code=503, detail="The study graph is temporarily unavailable") from exc
