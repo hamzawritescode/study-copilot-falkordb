@@ -220,6 +220,8 @@ Copy `.env.example` to `.env`. Empty credentials are valid for the Docker Falkor
 - `POST /api/actions/{action_id}/confirm`: accepts `{ "approved": true }` or `{ "approved": false }`.
 - `GET /docs`: interactive OpenAPI documentation.
 
+The UI checks `/health` on load and shows `graph online` or `graph unavailable` in the header. If the graph is unavailable, the backend and UI remain available for troubleshooting, while graph-backed chat and actions return a clear error until FalkorDB is reachable.
+
 Example:
 
 ```powershell
