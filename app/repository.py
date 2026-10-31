@@ -13,7 +13,9 @@ class StudyRepository:
         query = """
         MATCH (u:User {id:$user_id})-[:HAS_PROGRESS]->(p:Progress)-[:FOR_TOPIC]->(t:Topic)
         OPTIONAL MATCH (u)-[:HAS_GAP]->(g:SkillGap)-[:FOR_TOPIC]->(gt:Topic)
-        RETURN u, p, t, g, gt
+        OPTIONAL MATCH (t)-[:HAS_RESOURCE]->(resource:Resource)
+        OPTIONAL MATCH (t)-[:HAS_QUIZ]->(quiz:Quiz)
+        RETURN u, p, t, g, gt, resource, quiz
         """
         return self.db.query(query, {"user_id": user_id})
 
@@ -32,8 +34,25 @@ class StudyRepository:
           }
         OPTIONAL MATCH (u)-[:HAS_GAP]->(gap:SkillGap)-[:FOR_TOPIC]->(candidate)
         OPTIONAL MATCH (candidate)-[:HAS_RESOURCE]->(resource:Resource)
-        RETURN candidate, gap, resource
+        OPTIONAL MATCH (candidate)-[:HAS_QUIZ]->(quiz:Quiz)
+        RETURN candidate, gap, resource, quiz
         ORDER BY coalesce(gap.severity, 0) DESC, candidate.difficulty ASC
+        """
+        return self.db.query(query, {"user_id": user_id, "minutes": available_minutes})
+
+    def blocked_topics(self, user_id: str, available_minutes: int = 45) -> list[dict[str, Any]]:
+        query = """
+        MATCH (u:User {id:$user_id})-[:HAS_PROGRESS]->(p:Progress)-[:FOR_TOPIC]->(done:Topic)
+        MATCH (candidate:Topic)
+        WHERE candidate <> done
+          AND candidate.estimated_minutes <= $minutes
+        MATCH (prerequisite:Topic)-[:PREREQUISITE_OF]->(candidate)
+        OPTIONAL MATCH (u)-[:HAS_PROGRESS]->(mp:Progress)-[:FOR_TOPIC]->(prerequisite)
+        WHERE mp IS NULL OR mp.mastery < 0.7
+        OPTIONAL MATCH (candidate)-[:HAS_RESOURCE]->(resource:Resource)
+        OPTIONAL MATCH (candidate)-[:HAS_QUIZ]->(quiz:Quiz)
+        RETURN DISTINCT candidate, prerequisite, mp, resource, quiz
+        ORDER BY candidate.difficulty ASC
         """
         return self.db.query(query, {"user_id": user_id, "minutes": available_minutes})
 
