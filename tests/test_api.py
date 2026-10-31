@@ -5,7 +5,7 @@ from app.main import app, agent
 
 class FakeAgent:
     def respond(self, user_id, message):
-        return {"answer": "Use Data Structures next.", "context": [], "decision": None, "pending_action_id": None}
+        return {"answer": "Use Data Structures next.", "context": [], "decision": None, "pending_action_id": None, "evidence": None, "blocked_candidates": []}
 
 
 def test_chat_validates_and_returns_response(monkeypatch):

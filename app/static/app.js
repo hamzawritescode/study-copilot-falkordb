@@ -87,6 +87,49 @@ function renderAction(response) {
     delete actionCard.dataset.actionId;
     return;
   }
+
+  function renderEvidence(response) {
+    const evidence = response.evidence;
+    const blocked = response.blocked_candidates || [];
+    const panel = document.querySelector("#evidence");
+    if (!panel) return;
+    if (!evidence && !blocked.length) {
+      panel.innerHTML = "";
+      panel.classList.add("hidden");
+      return;
+    }
+    const pathMarkup = (paths) =>
+      (paths || [])
+        .map((path) => {
+          const nodes = (path.nodes || []).map((node) => node.name || node.title || node.id || "node");
+          const relationships = path.relationships || [];
+          const parts = [];
+          nodes.forEach((node, index) => {
+            parts.push(`<span>${escapeHtml(node)}</span>`);
+            if (relationships[index]) parts.push(`<b>→ ${escapeHtml(relationships[index])} →</b>`);
+          });
+          return `<div class="evidence-path">${parts.join(" ")}</div>`;
+        })
+        .join("");
+    const blockedMarkup = blocked
+      .map(
+        (item) =>
+          `<li><strong>${escapeHtml(item.topic.name || item.topic.id)}</strong><span>${escapeHtml(item.reason)}</span>${pathMarkup(item.prerequisite_path)}</li>`,
+      )
+      .join("");
+    panel.classList.remove("hidden");
+    panel.innerHTML = `
+      ${evidence ? `<h3>Why this topic?</h3>
+        <p>${escapeHtml(evidence.reason)}</p>
+        <dl>
+          <dt>Available time</dt><dd>${escapeHtml(evidence.available_time ?? "unknown")} minutes</dd>
+          <dt>Progress</dt><dd>${(evidence.user_progress || []).map((item) => `${escapeHtml(item.topic?.name || item.topic?.id || "topic")}: ${escapeHtml(item.mastery ?? "n/a")}`).join(", ") || "No progress record"}</dd>
+        </dl>
+        ${pathMarkup(evidence.prerequisite_path)}
+        <p class="connected">${(evidence.connected_resources || []).map((item) => `Resource: ${escapeHtml(item.title)}`).join(" · ")} ${(evidence.connected_quizzes || []).map((item) => `Quiz: ${escapeHtml(item.title)}`).join(" · ")}</p>` : ""}
+      ${blockedMarkup ? `<h3>Blocked candidates</h3><ul>${blockedMarkup}</ul>` : ""}
+    `;
+  }
   actionCard.dataset.actionId = response.pending_action_id;
   actionCard.innerHTML = `<strong>Confirmation required</strong><p>${escapeHtml(response.decision.reason)}</p><button id="approve">Approve action</button> <button id="reject">Reject</button>`;
   document.querySelector("#approve").onclick = () => confirmAction(true);
@@ -132,6 +175,7 @@ async function submit(text) {
     addMessage(data.answer, "assistant");
     renderContext(data.context || []);
     renderAction(data);
+    renderEvidence(data);
   } catch {
     addMessage(
       "I could not reach the Study Copilot API. Check that the backend is running and try again.",

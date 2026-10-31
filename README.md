@@ -45,6 +45,8 @@ flowchart LR
 
 The browser calls `/api/chat`. The agent first retrieves the user's graph context and eligible next topics. It then decides whether the request is a recommendation or a confirmation-gated mutation. Confirmed mutations are executed through `ActionService` and written to FalkorDB.
 
+Recommendation responses include structured `evidence` and `blocked_candidates` fields. Evidence contains the selected topic, available time, progress/mastery, skill gap, connected resources and quizzes, and the relationship paths returned by FalkorDB. Blocked candidates explain which prerequisite is below the 0.70 mastery threshold.
+
 ## Graph Model
 
 ### Nodes
@@ -149,6 +151,16 @@ Implemented actions:
 
 The confirmation endpoint consumes a one-time action ID. Approved actions are executed and recorded in the service audit log; rejected actions are also logged. Invalid or expired IDs return HTTP 404.
 
+Mutation requests must identify their graph records and provide numeric values instead of relying on demo defaults. Examples:
+
+- `Build a study plan for Data Structures`
+- `Mark "Choosing the Right Collection" complete`
+- `Record quiz q_data with score 0.8`
+- `Update progress for t_data to mastery 0.75`
+- `What should I study next in 30 minutes?`
+
+If a required topic, resource, quiz, score, or mastery value is missing, the agent asks a clarification question. IDs and names are resolved only against records returned from the requesting user's connected graph context.
+
 ## Local Setup
 
 Requirements: Python 3.11+. Docker Desktop is the fastest way to run the complete demo because FalkorDB is a Redis module and does not provide a standard native Windows install.
@@ -246,7 +258,7 @@ For a mutation request, use a message containing `plan` or `progress`. The respo
 - `Update my progress`
 - `Mark this resource complete`
 - `Record a quiz attempt`
-- `Generate practice questions`
+- `Retrieve connected practice questions`
 
 Use the buttons in the UI or type the prompts. The right-hand context panel shows records retrieved from FalkorDB, and the action panel shows approval controls when needed.
 
